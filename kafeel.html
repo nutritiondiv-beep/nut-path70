@@ -1,0 +1,621 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,system-ui,sans-serif);direction:rtl;font-size:14px;line-height:1.5;color:var(--color-text-primary)}
+.app{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden}
+
+/* HEADER */
+.hdr{background:#0B5E4A;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-logo svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hdr-title{color:#fff;font-size:14px;font-weight:500}
+.hdr-sub{color:rgba(255,255,255,.6);font-size:11px;margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:8px}
+.hdr-id{font-size:11px;color:rgba(255,255,255,.5);font-family:monospace;letter-spacing:.04em}
+.hdr-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500}
+
+/* PHASE STEPPER */
+.stepper{display:flex;padding:0 20px;background:#085041;gap:0;overflow-x:auto}
+.stp{flex:1;min-width:80px;padding:9px 6px;text-align:center;font-size:11px;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none;white-space:nowrap}
+.stp:hover:not(.active){color:rgba(255,255,255,.7)}
+.stp.active{color:#fff;border-bottom-color:#5DCAA5}
+.stp.done{color:rgba(255,255,255,.65)}
+.stp .sn{display:inline-flex;width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;align-items:center;justify-content:center;font-size:9px;margin-left:4px;flex-shrink:0}
+.stp.done .sn{background:#1D9E75;border-color:#1D9E75;color:#fff}
+
+/* PROG */
+.prog{height:2px;background:rgba(255,255,255,.1)}
+.prog-f{height:100%;background:#5DCAA5;transition:width .3s ease}
+
+/* BODY */
+.body{padding:20px 22px}
+
+/* SECTION LABEL */
+.sec{font-size:11px;font-weight:500;color:#0B5E4A;background:#E1F5EE;border:0.5px solid #9FE1CB;padding:4px 10px;border-radius:5px;margin:0 0 12px;display:inline-flex;align-items:center;gap:5px}
+.sec svg{width:12px;height:12px;flex-shrink:0}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.g1{margin-bottom:12px}
+
+/* FIELDS */
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:11px;font-weight:500;color:var(--color-text-secondary)}
+.f label .r{color:#E24B4A}
+.f input,.f select,.f textarea{width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:7px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit;direction:rtl;transition:border-color .15s}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:#0B5E4A;box-shadow:0 0 0 3px rgba(11,94,74,.08)}
+.f textarea{min-height:60px;resize:vertical}
+.f .hint{font-size:10px;color:var(--color-text-secondary)}
+.f .err{font-size:10px;color:#A32D2D;display:none}
+.f.bad input,.f.bad select{border-color:#E24B4A}
+.f.bad .err{display:block}
+.f.bad label .r{color:#E24B4A}
+
+/* RADIO / CHECK */
+.rg{display:flex;flex-wrap:wrap;gap:6px}
+.ro{display:flex;align-items:center;gap:5px;padding:5px 10px;border:0.5px solid var(--color-border-secondary);border-radius:6px;cursor:pointer;font-size:12px;color:var(--color-text-primary);transition:all .13s;user-select:none}
+.ro:hover{border-color:#1D9E75;background:#E1F5EE;color:#0B5E4A}
+.ro.on{border-color:#0B5E4A;background:#E1F5EE;color:#0B5E4A;font-weight:500}
+.ro .d{width:12px;height:12px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ro.on .d::after{content:"";width:5px;height:5px;border-radius:50%;background:#0B5E4A}
+.cg{display:flex;flex-wrap:wrap;gap:6px}
+.co{display:flex;align-items:center;gap:5px;padding:5px 10px;border:0.5px solid var(--color-border-secondary);border-radius:6px;cursor:pointer;font-size:12px;color:var(--color-text-primary);transition:all .13s;user-select:none}
+.co:hover{border-color:#1D9E75;background:#E1F5EE;color:#0B5E4A}
+.co.on{border-color:#0B5E4A;background:#E1F5EE;color:#0B5E4A;font-weight:500}
+.cb{width:12px;height:12px;border:1.5px solid currentColor;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.co.on .cb{background:#0B5E4A;border-color:#0B5E4A;color:#fff}
+
+/* DIVIDER */
+.dv{height:0.5px;background:var(--color-border-tertiary);margin:14px 0}
+
+/* NRS QUESTION CARD */
+.qcard{border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:12px 14px;margin-bottom:10px;background:var(--color-background-secondary)}
+.qcard-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.qcard-hint{font-size:11px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.5}
+
+/* LIVE SCORE */
+.live{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+.live-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.live-num{font-size:28px;font-weight:500;color:#0B5E4A;line-height:1}
+.live-of{font-size:13px;color:var(--color-text-secondary);align-self:flex-end;padding-bottom:2px}
+.rpill{padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500}
+.r0{background:#EAF3DE;color:#27500A}
+.r1{background:#FAEEDA;color:#633806}
+.r2{background:#FCEBEB;color:#791F1F}
+.live-items{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary)}
+.si{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500}
+.si-g{background:#EAF3DE;color:#27500A}
+.si-a{background:#FAEEDA;color:#633806}
+.si-r{background:#FCEBEB;color:#791F1F}
+.si-n{background:var(--color-background-tertiary,#f2f2f0);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+
+/* BMI STRIP */
+.bmi-strip{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);margin-top:6px;font-size:12px}
+.bmi-val{font-weight:500;font-size:15px}
+.bmi-tag{padding:2px 9px;border-radius:4px;font-size:11px;font-weight:500}
+.bt-u{background:#E6F1FB;color:#0C447C}
+.bt-n{background:#EAF3DE;color:#27500A}
+.bt-o{background:#FAEEDA;color:#633806}
+.bt-ob{background:#FCEBEB;color:#791F1F}
+
+/* ACTION BOX */
+.abox{border-radius:8px;padding:14px 16px;margin-bottom:12px;border:1.5px solid}
+.al{background:#EAF3DE;border-color:#97C459}
+.am{background:#FAEEDA;border-color:#EF9F27}
+.ah{background:#FCEBEB;border-color:#F09595}
+.abox-title{font-size:13px;font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.al .abox-title{color:#27500A}
+.am .abox-title{color:#633806}
+.ah .abox-title{color:#791F1F}
+.abox-body{font-size:12px;line-height:1.7}
+.al .abox-body{color:#3B6D11}
+.am .abox-body{color:#854F0B}
+.ah .abox-body{color:#A32D2D}
+
+/* SUMMARY TABLE */
+.stbl{width:100%;border-collapse:collapse;margin-bottom:12px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;overflow:hidden}
+.stbl thead tr{background:#0B5E4A}
+.stbl thead td{color:#fff;font-size:11px;font-weight:500;padding:8px 12px}
+.stbl tbody tr:nth-child(odd){background:var(--color-background-secondary)}
+.stbl tbody tr:nth-child(even){background:var(--color-background-primary)}
+.stbl tbody td{font-size:12px;padding:7px 12px;border-top:0.5px solid var(--color-border-tertiary)}
+.stbl .k{color:var(--color-text-secondary);width:38%}
+.stbl .v{color:var(--color-text-primary);font-weight:500}
+.vteal{color:#0B5E4A}
+.vamber{color:#854F0B}
+.vred{color:#A32D2D}
+
+/* COMPLETE BANNER */
+.cbanner{background:#E1F5EE;border:1.5px solid #5DCAA5;border-radius:10px;padding:16px 20px;text-align:center;margin-bottom:14px}
+.cbanner-icon{width:40px;height:40px;background:#0B5E4A;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.cbanner-icon svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.cbanner-t{font-size:14px;font-weight:500;color:#085041}
+.cbanner-s{font-size:11px;color:#0F6E56;margin-top:3px}
+
+/* REF BADGE */
+.ref{background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500}
+
+/* NAV */
+.nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px;padding-top:14px;border-top:0.5px solid var(--color-border-tertiary)}
+.btn{padding:8px 18px;font-size:12px;font-weight:500;border-radius:7px;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);transition:all .13s;font-family:inherit}
+.btn:hover{background:var(--color-background-tertiary)}
+.btn:active{transform:scale(.98)}
+.btnp{background:#0B5E4A;color:#fff;border-color:#0B5E4A}
+.btnp:hover{background:#0F6E56}
+.btns{margin-right:auto}
+
+/* FOOT */
+.foot{background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);padding:7px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.foot-l{font-size:11px;color:var(--color-text-secondary)}
+.foot-dot{width:6px;height:6px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.foot-r{display:flex;align-items:center;gap:5px;font-size:11px;color:#0B5E4A;font-weight:500}
+
+/* POP SELECTOR */
+.pop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pop-card{border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .13s;display:flex;align-items:center;gap:8px;user-select:none}
+.pop-card:hover{border-color:#1D9E75;background:#E1F5EE}
+.pop-card.on{border-color:#0B5E4A;background:#E1F5EE;border-width:1.5px}
+.pop-card-icon{font-size:20px;flex-shrink:0;line-height:1}
+.pop-card-t{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.pop-card-s{font-size:11px;color:var(--color-text-secondary)}
+
+@media(max-width:520px){.g2,.g3,.pop-grid{grid-template-columns:1fr}.nav{flex-direction:column;align-items:stretch}.btns{margin-right:0}}
+</style>
+
+<div class="app" dir="rtl">
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="hdr-logo">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/><path d="M12 8v8m-4-4h8"/></svg>
+    </div>
+    <div>
+      <div class="hdr-title">نموذج دخول التغذية السريرية</div>
+      <div class="hdr-sub">Clinical Nutrition Admission Form — مستشفى الكفيل</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="hdr-id" id="admId">ADM-———</div>
+    <div class="hdr-pill">ESPEN 2023</div>
+  </div>
+</div>
+
+<div class="stepper" id="stepBar">
+  <div class="stp active" onclick="tryGoStep(0)"><span class="sn" id="sn0">1</span>تحديد الفئة</div>
+  <div class="stp" onclick="tryGoStep(1)"><span class="sn" id="sn1">2</span>بيانات المريض</div>
+  <div class="stp" onclick="tryGoStep(2)"><span class="sn" id="sn2">3</span>القياسات</div>
+  <div class="stp" onclick="tryGoStep(3)"><span class="sn" id="sn3">4</span>الفحص الغذائي</div>
+  <div class="stp" onclick="tryGoStep(4)"><span class="sn" id="sn4">5</span>النتيجة</div>
+</div>
+<div class="prog"><div class="prog-f" id="progF" style="width:10%"></div></div>
+
+<div class="body" id="mainBody"></div>
+
+<div class="foot">
+  <div class="foot-l" id="footL">الخطوة 1 من 5</div>
+  <div class="foot-r"><div class="foot-dot"></div>Nutrition Care Process (NCP)</div>
+</div>
+</div>
+
+<script>
+const D={};
+let cur=0;
+const done=[false,false,false,false,false];
+const N=5;
+document.getElementById('admId').textContent='ADM-'+Date.now().toString(36).toUpperCase().slice(-6);
+
+const POPS=[
+  {k:'adult',icon:'🧑‍⚕️',t:'بالغ / مريض عام',s:'≥ 18 سنة — NRS-2002'},
+  {k:'child',icon:'👶',t:'طفل',s:'< 18 سنة — STRONGkids'},
+  {k:'maternal',icon:'🤰',t:'حامل',s:'جميع مراحل الحمل'},
+  {k:'lactation',icon:'🍼',t:'مرضعة',s:'فترة الرضاعة الطبيعية'},
+];
+
+const WARDS=['الطب الداخلي','الجراحة','وحدة العناية الحثيثة ICU','أمراض القلب','أمراض الكلى','الأورام','الجهاز الهضمي','النساء والتوليد','طب الأطفال','العظام','الأعصاب','الطوارئ','جراحة الأوعية','أمراض الجهاز التنفسي'];
+
+function tryGoStep(n){
+  if(n>cur){if(!validate(cur))return;done[cur]=true;}
+  cur=n;rebuildStepBar();render();
+}
+function rebuildStepBar(){
+  document.querySelectorAll('.stp').forEach((t,i)=>{
+    t.classList.toggle('active',i===cur);t.classList.toggle('done',done[i]&&i!==cur);
+    const sn=t.querySelector('.sn');sn.textContent=(done[i]&&i!==cur)?'✓':(i+1);
+  });
+  document.getElementById('progF').style.width=Math.round(((cur+1)/N)*100)+'%';
+  document.getElementById('footL').textContent=`الخطوة ${cur+1} من ${N} — ${['تحديد الفئة','بيانات المريض','القياسات','الفحص الغذائي','النتيجة والتوصية'][cur]}`;
+}
+
+function validate(s){
+  if(s===0){if(!D.pop){alert('الرجاء اختيار فئة المريض');return false;}return true;}
+  if(s===1){
+    let ok=true;
+    [['pt-name','name'],['pt-mrn','mrn'],['pt-age','age'],['pt-ward','ward']].forEach(([id,key])=>{
+      const el=document.getElementById(id);if(!el)return;
+      D[key]=el.value;
+      const fld=el.closest('.f');
+      if(!el.value.trim()){fld&&fld.classList.add('bad');ok=false;}else fld&&fld.classList.remove('bad');
+    });
+    if(!D.gender){document.getElementById('gender-err').style.display='block';ok=false;}else document.getElementById('gender-err').style.display='none';
+    return ok;
+  }
+  if(s===2){
+    let ok=true;
+    [['pt-wt','weight'],['pt-ht','height']].forEach(([id,key])=>{
+      const el=document.getElementById(id);if(!el)return;
+      const v=parseFloat(el.value);const fld=el.closest('.f');
+      if(!v||v<=0){fld&&fld.classList.add('bad');ok=false;}else{fld&&fld.classList.remove('bad');D[key]=v;}
+    });
+    return ok;
+  }
+  return true;
+}
+
+function R(opts,key,errId){
+  return`<div class="rg">${opts.map(o=>`<div class="ro${D[key]===o.k?' on':''}" onclick="pick('${key}','${o.k}',this${errId?`,'${errId}'`:''})">`+`<div class="d"></div>${o.l}</div>`).join('')}</div>`+(errId?`<div class="err" id="${errId}" style="font-size:10px;color:#A32D2D;margin-top:2px"></div>`:'');
+}
+function C(opts,key){
+  return`<div class="cg">${opts.map(o=>`<div class="co${(D[key]||[]).includes(o.k)?' on':''}" onclick="tog('${key}','${o.k}',this)"><div class="cb">${(D[key]||[]).includes(o.k)?'✓':''}</div>${o.l}</div>`).join('')}</div>`;
+}
+function pick(key,val,el,errId){
+  D[key]=val;
+  el.closest('.rg').querySelectorAll('.ro').forEach(r=>r.classList.remove('on'));el.classList.add('on');
+  if(errId){document.getElementById(errId).style.display='none';}
+  if(['ns_imp','ns_wl','ns_int','ns_sev','sk_q1','sk_q2','sk_q3','sk_q4'].includes(key))liveScore();
+}
+function tog(key,val,el){
+  if(!D[key])D[key]=[];const i=D[key].indexOf(val);
+  if(i>-1){D[key].splice(i,1);el.classList.remove('on');el.querySelector('.cb').textContent='';}
+  else{D[key].push(val);el.classList.add('on');el.querySelector('.cb').textContent='✓';}
+}
+
+function bmi(){const w=D.weight,h=D.height;if(!w||!h||h<50)return null;return+(w/((h/100)**2)).toFixed(1);}
+function bmiInfo(b){if(b<18.5)return['نقص الوزن','bt-u'];if(b<25)return['وزن طبيعي','bt-n'];if(b<30)return['زيادة وزن','bt-o'];return['سمنة','bt-ob'];}
+
+/* NRS-2002 score */
+function nrsCalc(){
+  const ns=Math.max(+(D.ns_imp||0),+(D.ns_wl||0),+(D.ns_int||0));
+  const sev=+(D.ns_sev||0);
+  const age=(+(D.age||0))>=70?1:0;
+  const tot=Math.min(ns+sev+age,7);
+  const items=[];
+  if(ns===0)items.push({t:'حالة تغذية طبيعية (0)',c:'si-n'});
+  else if(ns===1)items.push({t:'حالة تغذية خفيفة (+1)',c:'si-a'});
+  else if(ns===2)items.push({t:'حالة تغذية متوسطة (+2)',c:'si-a'});
+  else items.push({t:'حالة تغذية شديدة (+3)',c:'si-r'});
+  if(sev===0)items.push({t:'شدة مرض: لا يوجد (0)',c:'si-n'});
+  else if(sev===1)items.push({t:'شدة مرض خفيفة (+1)',c:'si-a'});
+  else if(sev===2)items.push({t:'شدة مرض متوسطة (+2)',c:'si-a'});
+  else items.push({t:'شدة مرض شديدة (+3)',c:'si-r'});
+  if(age)items.push({t:'عمر ≥ 70 سنة (+1)',c:'si-a'});
+  return{score:tot,items};
+}
+
+/* STRONGkids score */
+function skCalc(){
+  let s=0;
+  if(D.sk_q1==='1')s+=1;
+  if(D.sk_q2==='2')s+=2;else if(D.sk_q2==='1')s+=1;
+  if(D.sk_q3==='1')s+=1;
+  if(D.sk_q4==='1')s+=1;
+  return Math.min(s,5);
+}
+
+/* Maternal score (simple clinical checklist) */
+function maternalCalc(){
+  let s=0;
+  if(D.mat_bmi==='low')s+=2;else if(D.mat_bmi==='high')s+=1;
+  if(D.mat_gdm==='yes')s+=1;
+  if(D.mat_hb==='low')s+=1;
+  if(D.mat_intake==='poor')s+=2;else if(D.mat_intake==='fair')s+=1;
+  return Math.min(s,7);
+}
+
+/* Lactation score */
+function lactCalc(){
+  let s=0;
+  if(D.lac_intake==='poor')s+=2;else if(D.lac_intake==='fair')s+=1;
+  if(D.lac_wl==='yes')s+=2;
+  if(D.lac_prod==='poor')s+=2;else if(D.lac_prod==='fair')s+=1;
+  return Math.min(s,7);
+}
+
+function getScore(){
+  if(D.pop==='adult')return nrsCalc().score;
+  if(D.pop==='child')return skCalc();
+  if(D.pop==='maternal')return maternalCalc();
+  return lactCalc();
+}
+
+function riskInfo(s,pop){
+  if(pop==='adult'){
+    if(s<3)return['منخفض','r0','al'];
+    if(s===3)return['متوسط','r1','am'];
+    return['مرتفع','r2','ah'];
+  }
+  if(pop==='child'){
+    if(s<=1)return['منخفض','r0','al'];
+    if(s<=3)return['متوسط','r1','am'];
+    return['مرتفع','r2','ah'];
+  }
+  if(s<=1)return['منخفض','r0','al'];
+  if(s<=3)return['متوسط','r1','am'];
+  return['مرتفع','r2','ah'];
+}
+
+function actionText(pop,risk){
+  const base={
+    adult:{
+      al:'متابعة روتينية — إعادة الفحص بعد 7 أيام أو عند تغيُّر الحالة. لا داعي لإحالة عاجلة.',
+      am:'يُحال إلى أخصائي التغذية خلال 48 ساعة. يُبدأ بتحسين Intake وتقييم شامل.',
+      ah:'إحالة فورية خلال 24 ساعة. يُوثَّق في الملف. يُبدأ بتدخل غذائي عاجل وفق NCP.'
+    },
+    child:{
+      al:'خطر منخفض — متابعة أسبوعية لمنحنيات النمو. توعية الأم بالتغذية المناسبة للعمر.',
+      am:'خطر متوسط — إحالة خلال 48 ساعة. تقييم Z-score وفحص Intake. استشارة أخصائي تغذية الأطفال.',
+      ah:'خطر مرتفع — إحالة فورية خلال 24 ساعة. قياس Z-scores كاملة. تدخل غذائي فوري.'
+    },
+    maternal:{
+      al:'وضع تغذوي مقبول — متابعة شهرية. تأكيد كفاية المكملات (Folate, Fe, D3).',
+      am:'يُحال لأخصائي تغذية خلال 48 ساعة. تقييم نظام GDM إذا انطبق. مراجعة زيادة الوزن.',
+      ah:'إحالة فورية. خطر سوء تغذية يؤثر على الجنين. تدخل غذائي شامل وفحص مخبري عاجل.'
+    },
+    lactation:{
+      al:'وضع تغذوي مقبول — متابعة دورية. التأكد من كفاية السعرات والسوائل.',
+      am:'يُحال خلال 48 ساعة. دعم الرضاعة وتقييم جودة الحليب. مراجعة Ca وD3.',
+      ah:'إحالة فورية. خطر نقص غذائي يؤثر على جودة الحليب ونمو الرضيع.'
+    }
+  };
+  return base[pop][risk];
+}
+
+function liveScore(){
+  const lsEl=document.getElementById('ls-num');const lrEl=document.getElementById('ls-risk');const liEl=document.getElementById('ls-items');
+  if(!lsEl)return;
+  const sc=getScore();const pop=D.pop||'adult';const[rl,rc]=riskInfo(sc,pop);
+  lsEl.textContent=sc;lrEl.className='rpill '+rc;lrEl.textContent=rl;
+  if(D.pop==='adult'){
+    const{items}=nrsCalc();
+    liEl.innerHTML=items.map(it=>`<span class="si ${it.c}">${it.t}</span>`).join('');
+  } else {
+    liEl.innerHTML=`<span class="si ${rc==='r0'?'si-g':rc==='r1'?'si-a':'si-r'}">الدرجة: ${sc}</span>`;
+  }
+}
+
+/* ─── STEP RENDERERS ─── */
+function step0(){
+  return`<div class="sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>تحديد فئة المريض</div>
+  <div class="pop-grid">${POPS.map(p=>`<div class="pop-card${D.pop===p.k?' on':''}" onclick="D.pop='${p.k}';document.querySelectorAll('.pop-card').forEach(c=>c.classList.remove('on'));this.classList.add('on')">
+    <div class="pop-card-icon">${p.icon}</div>
+    <div><div class="pop-card-t">${p.t}</div><div class="pop-card-s">${p.s}</div></div>
+  </div>`).join('')}</div>
+  <div class="nav"><button class="btn btnp" onclick="tryGoStep(1)">التالي — بيانات المريض ←</button></div>`
+}
+
+function step1(){
+  return`<div class="sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>البيانات الديموغرافية والإكلينيكية</div>
+  <div class="g2">
+    <div class="f"><label>اسم المريض الرباعي<span class="r">*</span></label><input id="pt-name" value="${D.name||''}" placeholder="الاسم الكامل"><div class="err">هذا الحقل مطلوب</div></div>
+    <div class="f"><label>الرقم الطبي MRN<span class="r">*</span></label><input id="pt-mrn" value="${D.mrn||''}" placeholder="KH-000000"><div class="err">مطلوب</div></div>
+  </div>
+  <div class="g3">
+    <div class="f"><label>تاريخ الميلاد</label><input id="pt-dob" type="date" value="${D.dob||''}" onchange="D.dob=this.value;calcAge()"></div>
+    <div class="f"><label>العمر (سنة)<span class="r">*</span></label><input id="pt-age" type="number" min="0" max="120" value="${D.age||''}" placeholder="45"><div class="err">أدخل عمراً صحيحاً</div></div>
+    <div class="f"><label>الجنس<span class="r">*</span></label>
+      ${R([{k:'M',l:'ذكر'},{k:'F',l:'أنثى'}],'gender','gender-err')}
+    </div>
+  </div>
+  <div class="g2">
+    <div class="f"><label>القسم / الجناح<span class="r">*</span></label>
+      <select id="pt-ward" onchange="D.ward=this.value"><option value="">اختر القسم...</option>${WARDS.map(w=>`<option value="${w}"${D.ward===w?' selected':''}>${w}</option>`).join('')}</select>
+      <div class="err">اختر القسم</div>
+    </div>
+    <div class="f"><label>رقم الغرفة / السرير</label><input id="pt-room" value="${D.room||''}" placeholder="204-B" onchange="D.room=this.value"></div>
+  </div>
+  <div class="dv"></div>
+  <div class="sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9l-6-6z"/><path d="M9 3v6h6"/></svg>المعلومات الطبية</div>
+  <div class="g1 f"><label>التشخيص الرئيسي<span class="r">*</span></label><input id="pt-diag" value="${D.diagnosis||''}" placeholder="مثال: سرطان الكولون، الفشل الكلوي المزمن..." onchange="D.diagnosis=this.value"><div class="err">مطلوب</div></div>
+  <div class="g2">
+    <div class="f"><label>الطبيب المعالج</label><input id="pt-phys" value="${D.physician||''}" placeholder="د. " onchange="D.physician=this.value"></div>
+    <div class="f"><label>تاريخ الدخول</label><input id="pt-admdate" type="date" value="${D.admdate||''}" onchange="D.admdate=this.value"></div>
+  </div>
+  <div class="f g1"><label>أمراض مصاحبة</label>${C([{k:'dm',l:'سكري'},{k:'htn',l:'ضغط'},{k:'ckd',l:'كلى'},{k:'hf',l:'قلب'},{k:'mal',l:'سرطان'},{k:'liver',l:'كبد'},{k:'copd',l:'COPD'},{k:'oth',l:'أخرى'}],'comorbid')}</div>
+  <div class="nav"><button class="btn btnp" onclick="tryGoStep(2)">التالي — القياسات ←</button><button class="btn btns" onclick="tryGoStep(0)">→ رجوع</button></div>`
+}
+
+function step2(){
+  const b=bmi();const bmiH=b?`<div class="bmi-strip"><div class="bmi-val">${b}</div><span style="font-size:11px;color:var(--color-text-secondary)">كغ/م²</span><span class="bmi-tag ${bmiInfo(b)[1]}">${bmiInfo(b)[0]}</span></div>`:'';
+  const showWaist=D.pop==='adult'||D.pop==='maternal';
+  const showGA=D.pop==='maternal';
+  const showHC=D.pop==='child';
+  return`<div class="sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3v18"/></svg>القياسات الأنثروبومترية</div>
+  <div class="g3">
+    <div class="f"><label>الوزن (كغ)<span class="r">*</span></label><input id="pt-wt" type="number" step="0.1" value="${D.weight||''}" placeholder="70.5" oninput="D.weight=+this.value;updBMI()"><div class="err">أدخل وزناً صحيحاً</div></div>
+    <div class="f"><label>الطول (سم)<span class="r">*</span></label><input id="pt-ht" type="number" step="0.5" value="${D.height||''}" placeholder="170" oninput="D.height=+this.value;updBMI()"><div class="err">أدخل طولاً صحيحاً</div></div>
+    ${showWaist?`<div class="f"><label>محيط الخصر (سم)</label><input type="number" step="0.5" value="${D.waist||''}" placeholder="اختياري" onchange="D.waist=+this.value"></div>`:
+      showGA?`<div class="f"><label>عمر الحمل (أسبوع)</label><input type="number" min="1" max="42" value="${D.ga||''}" placeholder="مثال: 28" onchange="D.ga=+this.value"></div>`:
+      showHC?`<div class="f"><label>محيط الرأس (سم)</label><input type="number" step="0.1" value="${D.hc||''}" placeholder="للأطفال < 2 سنة" onchange="D.hc=+this.value"></div>`:
+      `<div class="f"></div>`}
+  </div>
+  <div id="bmi-box" style="margin-bottom:12px">${bmiH}</div>
+  <div class="dv"></div>
+  <div class="sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>التاريخ الغذائي السريع</div>
+  <div class="g2">
+    <div class="f"><label>فقدان الوزن (3 أشهر)</label>${R([{k:'0',l:'لا يوجد'},{k:'1',l:'< 5%'},{k:'2',l:'5–10%'},{k:'3',l:'> 10%'}],'wt_loss')}</div>
+    <div class="f"><label>مستوى الشهية</label>${R([{k:'good',l:'جيدة'},{k:'fair',l:'متوسطة'},{k:'poor',l:'ضعيفة'},{k:'none',l:'فقدان تام'}],'appetite')}</div>
+  </div>
+  <div class="g2">
+    <div class="f"><label>طريقة التغذية الحالية</label>${R([{k:'oral',l:'فموي'},{k:'ons',l:'ONS'},{k:'en',l:'معوي EN'},{k:'pn',l:'وريدي PN'}],'feed_mode')}</div>
+    <div class="f"><label>أعراض هضمية</label>${C([{k:'nv',l:'غثيان / قيء'},{k:'diarr',l:'إسهال'},{k:'dysp',l:'عسر البلع'},{k:'pain',l:'ألم بطني'},{k:'none',l:'لا يوجد'}],'gi_symp')}</div>
+  </div>
+  <div class="nav"><button class="btn btnp" onclick="tryGoStep(3)">التالي — الفحص الغذائي ←</button><button class="btn btns" onclick="tryGoStep(1)">→ رجوع</button></div>`
+}
+
+function step3(){
+  const pop=D.pop||'adult';
+  let inner='';
+  if(pop==='adult'){
+    inner=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <span class="sec" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>فحص NRS-2002 — البالغين</span>
+      <span class="ref">ESPEN 2023 · Grade A</span>
+    </div>
+    <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px;line-height:1.6">يُختار أعلى درجة تنطبق على المريض في كل محور.</p>
+    <div class="qcard"><div class="qcard-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>أ) اضطراب حالة التغذية</div>
+    <div class="qcard-hint">اختر الوصف الأنسب لحالة المريض التغذوية حالياً.</div>
+    ${R([{k:'0',l:'0 — حالة طبيعية'},{k:'1',l:'1 — فقدان وزن > 5% / 3 أشهر أو Intake 50–75%'},{k:'2',l:'2 — فقدان > 5% / شهرين أو BMI 18.5–20.5 أو Intake 25–50%'},{k:'3',l:'3 — فقدان > 5% / شهر أو BMI < 18.5 أو Intake < 25%'}],'ns_imp')}</div>
+    <div class="qcard"><div class="qcard-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg>ب) تغيُّر الوزن الموثَّق</div>
+    <div class="qcard-hint">استناداً إلى بيانات الوزن المسجَّلة في الملف.</div>
+    ${R([{k:'0',l:'0 — لا يوجد فقدان'},{k:'1',l:'1 — فقدان خفيف < 5% / 3 أشهر'},{k:'2',l:'2 — فقدان 5–10% / 3 أشهر'},{k:'3',l:'3 — فقدان > 10% / 3 أشهر'}],'ns_wl')}</div>
+    <div class="qcard"><div class="qcard-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>ج) انخفاض تناول الطعام</div>
+    <div class="qcard-hint">مقارنةً بالاحتياجات التقديرية للمريض.</div>
+    ${R([{k:'0',l:'0 — طبيعي'},{k:'1',l:'1 — Intake 50–75% من الاحتياجات'},{k:'2',l:'2 — Intake 25–50% من الاحتياجات'},{k:'3',l:'3 — Intake < 25% من الاحتياجات'}],'ns_int')}</div>
+    <div class="dv"></div>
+    <div class="qcard"><div class="qcard-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>د) شدة المرض الحالية</div>
+    <div class="qcard-hint">تأثير الحالة المرضية على زيادة الاحتياجات الغذائية.</div>
+    ${R([{k:'0',l:'0 — لا يوجد / اعتيادي'},{k:'1',l:'1 — خفيف: كسر الورك، مرضى مزمنون في طور حاد'},{k:'2',l:'2 — متوسط: جراحة بطن كبرى، سكتة دماغية'},{k:'3',l:'3 — شديد: إصابات رأس، زرع نخاع، ICU (APACHE > 10)'}],'ns_sev')}</div>`;
+  } else if(pop==='child'){
+    inner=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <span class="sec" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>فحص STRONGkids — الأطفال</span>
+      <span class="ref">ASPEN · Validated</span>
+    </div>
+    <div class="qcard"><div class="qcard-title">1) هل الطفل يبدو نحيلاً أو سيئ التغذية بالفحص السريري؟</div>
+    ${R([{k:'0',l:'لا'},{k:'1',l:'نعم (+1)'}],'sk_q1')}</div>
+    <div class="qcard"><div class="qcard-title">2) هل يعاني من مرض مرتبط بخطر سوء تغذية؟</div>
+    <div class="qcard-hint">مرض عالي الخطورة (+2): سرطان، أمراض التهابية، فشل معوي، حروق. متوسط (+1): جراحات كبرى، أمراض مزمنة.</div>
+    ${R([{k:'0',l:'لا (0)'},{k:'1',l:'خطر متوسط (+1)'},{k:'2',l:'خطر عالٍ (+2)'}],'sk_q2')}</div>
+    <div class="qcard"><div class="qcard-title">3) هل يعاني من سوء تغذية حالي؟</div>
+    <div class="qcard-hint">انخفاض Intake، قيء متكرر، إسهال مزمن، أو عدم كفاية التغذية المعوية.</div>
+    ${R([{k:'0',l:'لا'},{k:'1',l:'نعم (+1)'}],'sk_q3')}</div>
+    <div class="qcard"><div class="qcard-title">4) هل فقد وزناً أو لم يكتسب وزناً كافياً خلال الأسبوعين الماضيين؟</div>
+    ${R([{k:'0',l:'لا'},{k:'1',l:'نعم (+1)'}],'sk_q4')}</div>`;
+  } else if(pop==='maternal'){
+    inner=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <span class="sec" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>تقييم التغذية في الحمل</span>
+      <span class="ref">IOM / WHO</span>
+    </div>
+    <div class="qcard"><div class="qcard-title">1) BMI قبل الحمل (Pre-pregnancy BMI)</div>
+    ${R([{k:'low',l:'< 18.5 — نقص وزن (+2)'},{k:'normal',l:'18.5–24.9 — طبيعي (0)'},{k:'high',l:'≥ 25 — زيادة / سمنة (+1)'}],'mat_bmi')}</div>
+    <div class="qcard"><div class="qcard-title">2) هل تعاني من سكري الحمل GDM؟</div>
+    ${R([{k:'no',l:'لا (0)'},{k:'yes',l:'نعم — تحتاج نظام GDM (+1)'}],'mat_gdm')}</div>
+    <div class="qcard"><div class="qcard-title">3) مستوى الهيموغلوبين Hb</div>
+    ${R([{k:'normal',l:'≥ 11 g/dL — طبيعي (0)'},{k:'low',l:'< 11 g/dL — فقر دم (+1)'}],'mat_hb')}</div>
+    <div class="qcard"><div class="qcard-title">4) تناول الطعام الحالي مقارنةً بالاحتياجات</div>
+    ${R([{k:'good',l:'كافٍ (0)'},{k:'fair',l:'منخفض قليلاً (+1)'},{k:'poor',l:'غير كافٍ بشكل واضح (+2)'}],'mat_intake')}</div>`;
+  } else {
+    inner=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <span class="sec" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>تقييم التغذية للمرضعة</span>
+      <span class="ref">IOM / WHO</span>
+    </div>
+    <div class="qcard"><div class="qcard-title">1) كفاية تناول الطعام والسعرات</div>
+    ${R([{k:'good',l:'كافٍ — +500 kcal/يوم أو أكثر (0)'},{k:'fair',l:'متوسط — أقل من المطلوب (+1)'},{k:'poor',l:'غير كافٍ — نقص واضح (+2)'}],'lac_intake')}</div>
+    <div class="qcard"><div class="qcard-title">2) هل فقدت الأم وزناً زائداً بسرعة بعد الولادة؟</div>
+    <div class="qcard-hint">> 500 غرام / أسبوع يُعتبر مفرطاً.</div>
+    ${R([{k:'no',l:'لا — فقدان طبيعي (0)'},{k:'yes',l:'نعم — فقدان مفرط (+2)'}],'lac_wl')}</div>
+    <div class="qcard"><div class="qcard-title">3) كمية ونوعية إنتاج الحليب</div>
+    ${R([{k:'good',l:'كافٍ وطبيعي (0)'},{k:'fair',l:'متقطع / غير منتظم (+1)'},{k:'poor',l:'غير كافٍ / ضعيف (+2)'}],'lac_prod')}</div>`;
+  }
+  const sc=getScore();const pop2=D.pop||'adult';const[rl,rc]=riskInfo(sc,pop2);
+  const{items}=pop2==='adult'?nrsCalc():{items:[{t:`الدرجة: ${sc}`,c:rc==='r0'?'si-g':rc==='r1'?'si-a':'si-r'}]};
+  return inner+`
+  <div class="live" id="live-box">
+    <div class="live-top">
+      <div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">الدرجة الإجمالية</div>
+        <div style="display:flex;align-items:baseline;gap:6px"><div class="live-num" id="ls-num">${sc}</div><div class="live-of">/ ${pop2==='adult'?'7':'5'}</div></div>
+      </div>
+      <div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:4px">مستوى الخطورة</div><div class="rpill ${rc}" id="ls-risk">${rl}</div></div>
+    </div>
+    <div class="live-items" id="ls-items">${items.map(it=>`<span class="si ${it.c}">${it.t}</span>`).join('')}</div>
+  </div>
+  <div class="nav"><button class="btn btnp" onclick="tryGoStep(4)">عرض النتيجة الكاملة ←</button><button class="btn btns" onclick="tryGoStep(2)">→ رجوع</button></div>`
+}
+
+function step4(){
+  const pop=D.pop||'adult';const sc=getScore();
+  const[rl,rc,ac]=riskInfo(sc,pop);
+  const at=actionText(pop,ac);
+  const b=bmi();const now=new Date();
+  const dateStr=now.toLocaleDateString('ar-IQ',{year:'numeric',month:'long',day:'numeric'});
+  const timeStr=now.toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'});
+  const popLabel={adult:'بالغ / مريض عام',child:'طفل',maternal:'حامل',lactation:'مرضعة'}[pop];
+  const tool={adult:'NRS-2002',child:'STRONGkids',maternal:'تقييم تغذية الحمل',lactation:'تقييم تغذية الرضاعة'}[pop];
+  const vClass=ac==='al'?'vteal':ac==='am'?'vamber':'vred';
+  const timingText=ac==='al'?'متابعة روتينية — إعادة الفحص بعد 7 أيام':ac==='am'?'إحالة خلال 48 ساعة':'إحالة فورية خلال 24 ساعة ⚠';
+
+  const summaryRows=[
+    ['اسم المريض',D.name||'—'],['الرقم الطبي',D.mrn||'—'],
+    ['العمر / الجنس',(D.age||'—')+' سنة — '+(D.gender==='M'?'ذكر':'أنثى')],
+    ['القسم',(D.ward||'—')+(D.room?' / '+D.room:'')],
+    ['التشخيص',D.diagnosis||'—'],['الفئة',popLabel],
+    ['الوزن / الطول',(D.weight||'—')+' كغ / '+(D.height||'—')+' سم'],
+    b?['BMI',b+' كغ/م² — '+bmiInfo(b)[0]]:null,
+    ['أداة الفحص',tool],
+  ].filter(Boolean);
+
+  const suggestPrompt=`بيانات مريض مستشفى الكفيل:
+الاسم: ${D.name||'؟'} | العمر: ${D.age||'؟'} سنة | الجنس: ${D.gender==='M'?'ذكر':'أنثى'}
+التشخيص: ${D.diagnosis||'؟'} | القسم: ${D.ward||'؟'}
+BMI: ${b||'؟'} | الفئة: ${popLabel}
+نتيجة ${tool}: ${sc} — خطر ${rl}
+فقدان الوزن: ${({0:'لا يوجد',1:'< 5%',2:'5–10%',3:'> 10%'}[D.wt_loss]||'غير محدد')}
+ما الخطة الغذائية المناسبة وفق ESPEN 2023؟`;
+
+  return`<div class="cbanner">
+    <div class="cbanner-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="cbanner-t">اكتمل نموذج دخول التغذية السريرية</div>
+    <div class="cbanner-s">${document.getElementById('admId').textContent} — ${dateStr} — ${timeStr}</div>
+  </div>
+  <table class="stbl">
+    <thead><tr><td>البيان</td><td>القيمة</td></tr></thead>
+    <tbody>${summaryRows.map(r=>`<tr><td class="k">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('')}</tbody>
+  </table>
+  <table class="stbl" style="margin-bottom:12px">
+    <thead><tr><td colspan="2">نتيجة الفحص الغذائي — ${tool}</td></tr></thead>
+    <tbody>
+      <tr><td class="k">الدرجة</td><td class="v ${vClass}">${sc} / ${pop==='adult'?7:5}</td></tr>
+      <tr><td class="k">مستوى الخطورة</td><td class="v ${vClass}">${rl}</td></tr>
+      <tr><td class="k">التوقيت</td><td class="v ${vClass}">${timingText}</td></tr>
+    </tbody>
+  </table>
+  <div class="abox ${ac}">
+    <div class="abox-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      التوصية السريرية — ${rl==='مرتفع'?'إحالة فورية':rl==='متوسط'?'إحالة خلال 48 ساعة':'متابعة روتينية'}
+    </div>
+    <div class="abox-body">${at}</div>
+  </div>
+  <div class="nav">
+    <button class="btn btnp" onclick="sendPrompt(${JSON.stringify(suggestPrompt)})">اقترح خطة غذائية كاملة ↗</button>
+    <button class="btn" onclick="resetAll()">نموذج جديد</button>
+  </div>`
+}
+
+function updBMI(){
+  const b=bmi();const el=document.getElementById('bmi-box');
+  if(!el)return;
+  if(b){const[l,c]=bmiInfo(b);el.innerHTML=`<div class="bmi-strip"><div class="bmi-val">${b}</div><span style="font-size:11px;color:var(--color-text-secondary)">كغ/م²</span><span class="bmi-tag ${c}">${l}</span></div>`;}
+  else el.innerHTML='';
+}
+
+function calcAge(){
+  const el=document.getElementById('pt-dob');if(!el||!el.value)return;
+  const age=Math.floor((Date.now()-new Date(el.value))/(365.25*24*3600*1000));
+  const ael=document.getElementById('pt-age');if(ael){ael.value=age;D.age=age;}
+}
+
+function bindInputs(){
+  setTimeout(()=>{
+    const map={'pt-name':'name','pt-mrn':'mrn','pt-age':'age','pt-ward':'ward','pt-room':'room','pt-diag':'diagnosis','pt-phys':'physician','pt-admdate':'admdate','pt-dob':'dob','pt-wt':'weight','pt-ht':'height'};
+    Object.entries(map).forEach(([id,k])=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>{D[k]=el.value;el.closest('.f')&&el.closest('.f').classList.remove('bad');});});
+  },30);
+}
+
+function resetAll(){Object.keys(D).forEach(k=>delete D[k]);done.fill(false);cur=0;rebuildStepBar();render();}
+
+const renderers=[step0,step1,step2,step3,step4];
+function render(){document.getElementById('mainBody').innerHTML=renderers[cur]();bindInputs();}
+
+render();
+</script>
